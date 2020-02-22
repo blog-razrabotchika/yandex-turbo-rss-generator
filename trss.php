@@ -1,9 +1,13 @@
 <?php
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 setlocale(LC_ALL, 'ru_RU');
 date_default_timezone_set('Europe/Moscow');
 header('Content-Type: text/xml; charset=utf-8');
 
-$url = 'http://site.ru'; // адрес вашего сайта
+$url = $_SERVER['SERVER_NAME']; // адрес вашего сайта
 
 $feed = '<?xml version="1.0" encoding="UTF-8"?>
      <rss xmlns:yandex="http://news.yandex.ru"
@@ -26,22 +30,22 @@ $feed = '<?xml version="1.0" encoding="UTF-8"?>
         $sdd_db_user='admin'; // пользователь базы данных
         $sdd_db_pass='12345'; // пароль к базе данных
 
-        @mysql_connect($sdd_db_host,$sdd_db_user,$sdd_db_pass); // подключение к серверу БД с заданными параметрами авторизации
+        $mysqli = new mysqli($sdd_db_host,$sdd_db_user,$sdd_db_pass); // подключение к серверу БД с заданными параметрами авторизации
+        if ($mysqli->connect_errno) echo "Error - Failed to connect to MySQL: " . $mysqli->connect_error;
 
-        @mysql_query("SET NAMES utf8"); // используется, если ключи не в формате UTF-8
-        @mysql_select_db($sdd_db_name); // выбираем нужную базу данных
-
+        $mysqli->query("SET NAMES utf8"); // используется, если ключи не в формате UTF-8
+        $mysqli->select_db($sdd_db_name); // выбираем нужную базу данных
+        $sql = "SELECT * FROM `site` WHERE `type` = 'articles'";
         // создаем запрос на выборку из базы данных
-        $result = mysql_query("SELECT * FROM `site` WHERE `type` = 'articles'");
         // SELECT * FROM `site` WHERE `type` = 'articles' расшифровывается так:
         // выбрать из базы данных site все пары, где указан тип articles (статьи)
-
+        $result = $mysqli->query($sql);
+        
         // создадим бесконечную ленту статей (после дочитывания первой за ней сразу же пойдет следующая)
         while($row = mysql_fetch_assoc($result)) {
         	$data[] = $row;
         	$feed .= '<link url="'.$site.'/articles/'.$row['id'].'">'.$row['name'].'</link>';
         }
-          
         //  $row['id'] - уникальный идентификатор мастериалы из БД
         //  $row['name'] - название статьи с этим уникальным id
        
