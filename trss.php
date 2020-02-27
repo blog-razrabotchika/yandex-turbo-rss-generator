@@ -42,14 +42,14 @@ $feed = '<?xml version="1.0" encoding="UTF-8"?>
         $result = $mysqli->query($sql);
         
         // создадим бесконечную ленту статей (после дочитывания первой за ней сразу же пойдет следующая)
-        while($row = mysql_fetch_assoc($result)) {
+        while($row = mysqli_fetch_assoc($result)) {
         	$data[] = $row;
         	$feed .= '<link url="'.$site.'/articles/'.$row['id'].'">'.$row['name'].'</link>';
         }
         //  $row['id'] - уникальный идентификатор мастериалы из БД
         //  $row['name'] - название статьи с этим уникальным id
        
-       mysql_close();
+       mysqli_close();
        $feed .= '</yandex:related>';
 
        // теперь остается собрать сами статьи в ленту, немного заменив относительные ссылки
