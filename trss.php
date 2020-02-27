@@ -7,7 +7,7 @@ setlocale(LC_ALL, 'ru_RU');
 date_default_timezone_set('Europe/Moscow');
 header('Content-Type: text/xml; charset=utf-8');
 
-$url = $_SERVER['SERVER_NAME']; // адрес вашего сайта
+$url = 'http://' . $_SERVER['SERVER_NAME']; // адрес вашего сайта
 
 $feed = '<?xml version="1.0" encoding="UTF-8"?>
      <rss xmlns:yandex="http://news.yandex.ru"
